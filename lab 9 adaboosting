@@ -1,0 +1,95 @@
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+data = pd.read_csv("/content/income.csv")
+
+data.head()
+     
+age	fnlwgt	education_num	capital_gain	capital_loss	hours_per_week	income_level
+0	39	77516	13	2174	0	40	0
+1	50	83311	13	0	0	13	0
+2	38	215646	9	0	0	40	0
+3	53	234721	7	0	0	40	0
+4	28	338409	13	0	0	40	0
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+data = pd.read_csv("/content/income.csv")
+
+
+# Handle categorical variables
+le = LabelEncoder()
+for col in data.columns:
+    if data[col].dtype == 'object':
+        data[col] = le.fit_transform(data[col])
+
+# Split features and target
+X = data.drop("income_level", axis=1)   # change "income" if target column name differs
+y = data["income_level"]
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# AdaBoost with Decision Stump
+model = AdaBoostClassifier(
+    estimator=DecisionTreeClassifier(max_depth=1),
+    n_estimators=10,
+    random_state=42
+)
+
+# Train
+model.fit(X_train, y_train);
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy with 10 estimators:", accuracy)
+     
+Accuracy with 10 estimators: 0.8182004299314157
+
+results = {}
+
+for n in [5, 10, 20, 50, 100]:
+    model = AdaBoostClassifier(
+        estimator=DecisionTreeClassifier(max_depth=1),
+        n_estimators=n,
+        random_state=42
+    )
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+    acc = accuracy_score(y_test, y_pred)
+    results[n] = acc
+    print(f"Estimators: {n}, Accuracy: {acc}")
+
+# Best result
+best_n = max(results, key=results.get)
+print("\nBest number of estimators:", best_n)
+print("Best accuracy:", results[best_n])
+     
+Estimators: 5, Accuracy: 0.8100112601085065
+Estimators: 10, Accuracy: 0.8182004299314157
+Estimators: 20, Accuracy: 0.8244446719213839
+Estimators: 50, Accuracy: 0.8327362063670796
+Estimators: 100, Accuracy: 0.8328385709898659
+
+Best number of estimators: 100
+Best accuracy: 0.8328385709898659
