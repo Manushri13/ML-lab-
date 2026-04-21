@@ -1,0 +1,338 @@
+With using library [ cannda per capita income dataset]
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Load dataset
+df = pd.read_csv("/content/canada_per_capita_income.csv")
+
+# Features (X) and Target (y)
+X = df[['year']]          # 2D array required
+y = df['per capita income (US$)']
+
+# Create model
+model = LinearRegression()
+
+# Train model
+model.fit(X, y)
+
+# Get coefficients
+intercept = model.intercept_
+slope = model.coef_[0]
+
+print("Intercept (β0):", intercept)
+print("Slope (β1):", slope)
+
+# Predictions
+y_pred = model.predict(X)
+
+# Plot
+plt.scatter(X, y, color='blue')
+plt.plot(X, y_pred, color='red')
+plt.xlabel("Year")
+plt.ylabel("Per Capita Income")
+plt.title("Linear Regression (Using sklearn)")
+plt.show()
+     
+Intercept (β0): -1632210.7578554575
+Slope (β1): 828.4650752227104
+
+without library [ canada per income]
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("/content/canada_per_capita_income.csv")
+
+# Convert to numpy arrays
+x = df['year'].values
+y = df['per capita income (US$)'].values
+
+n = len(x)
+
+# Calculate slope (β1)
+numerator = n * np.sum(x*y) - np.sum(x) * np.sum(y)
+denominator = n * np.sum(x*x) - (np.sum(x))**2
+
+b1 = numerator / denominator
+
+# Calculate intercept (β0)
+b0 = np.mean(y) - b1 * np.mean(x)
+
+print("Intercept (β0):", b0)
+print("Slope (β1):", b1)
+
+# Predictions
+y_pred = b0 + b1 * x
+
+# Plot
+plt.scatter(x, y, color='blue')
+plt.plot(x, y_pred, color='red')
+plt.xlabel("Year")
+plt.ylabel("Per Capita Income")
+plt.title("Linear Regression (Without Library)")
+plt.show()
+     
+Intercept (β0): -1632210.7578555008
+Slope (β1): 828.4650752227321
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Load dataset
+df = pd.read_csv("/content/salary.csv")
+
+df.fillna(df.mean(), inplace=True)
+
+# Features (X) and Target (y)
+X = df[['YearsExperience']]          # 2D array required
+y = df['Salary']
+
+# Create model
+model = LinearRegression()
+
+# Train model
+model.fit(X, y)
+
+# Get coefficients
+intercept = model.intercept_
+slope = model.coef_[0]
+
+print("Intercept (β0):", intercept)
+print("Slope (β1):", slope)
+
+# Predictions
+y_pred = model.predict(X)
+
+# Plot
+plt.scatter(X, y, color='blue')
+plt.plot(X, y_pred, color='red')
+plt.xlabel("Year")
+plt.ylabel("Per Capita Income")
+plt.title("Linear Regression (Using sklearn)")
+plt.show()
+     
+Intercept (β0): 27197.2020175696
+Slope (β1): 9398.640601843545
+
+without library ( salary dataset)
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+df = pd.read_csv("/content/salary.csv")
+
+df.fillna(df.mean(), inplace=True)
+
+# Convert to numpy arrays
+x = df['YearsExperience'].values
+y = df['Salary'].values
+
+n = len(x)
+
+# Calculate slope (β1)
+numerator = n * np.sum(x*y) - np.sum(x) * np.sum(y)
+denominator = n * np.sum(x*x) - (np.sum(x))**2
+
+b1 = numerator / denominator
+
+# Calculate intercept (β0)
+b0 = np.mean(y) - b1 * np.mean(x)
+
+print("Intercept (β0):", b0)
+print("Slope (β1):", b1)
+
+# Predictions
+y_pred = b0 + b1 * x
+
+# Plot
+plt.scatter(x, y, color='blue')
+plt.plot(x, y_pred, color='red')
+plt.xlabel("Year")
+plt.ylabel("Per Capita Income")
+plt.title("Linear Regression (Without Library)")
+plt.show()
+     
+Intercept (β0): 27197.20201756961
+Slope (β1): 9398.640601843543
+
+multiple LR ( hiring dataset) , with library
+
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Load dataset
+df = pd.read_csv("hiring.csv")
+
+# Convert experience words to numbers
+df['experience'] = df['experience'].replace({
+    'two': 2,
+    'three': 3,
+    'five': 5,
+    'seven': 7,
+    'ten': 10,
+    'eleven': 11
+})
+
+# Replace NaN with 0
+df['experience'] = df['experience'].fillna(0)
+df['test_score(out of 10)'] = df['test_score(out of 10)'].fillna(df['test_score(out of 10)'].median())
+
+# Features and Target
+X = df[['experience','test_score(out of 10)','interview_score(out of 10)']]
+y = df['salary($)']
+
+# Model
+model = LinearRegression()
+model.fit(X, y)
+
+# Coefficients
+print("Intercept:", model.intercept_)
+print("Coefficients:", model.coef_)
+
+# Example prediction
+print("Predicted salary:",
+      model.predict([[2, 9, 6]]))
+
+
+
+
+     
+Intercept: 17737.263464337688
+Coefficients: [2812.95487627 1845.70596798 2205.24017467]
+Predicted salary: [53205.96797671]
+/tmp/ipython-input-1387802810.py:9: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  df['experience'] = df['experience'].replace({
+/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names
+  warnings.warn(
+multiple LR ( hiring dataset) without library
+
+import pandas as pd
+import numpy as np
+
+# Load dataset
+df = pd.read_csv("hiring.csv")
+
+# Convert words to numbers
+df['experience'] = df['experience'].replace({
+    'two': 2,
+    'three': 3,
+    'five': 5,
+    'seven': 7,
+    'ten': 10,
+    'eleven': 11
+})
+
+df['experience'] = df['experience'].fillna(0)
+df['test_score(out of 10)'] = df['test_score(out of 10)'].fillna(df['test_score(out of 10)'].median())
+
+# Feature matrix
+X = df[['experience','test_score(out of 10)','interview_score(out of 10)']].values
+Y = df['salary($)'].values
+
+# Add column of 1s for intercept
+ones = np.ones((X.shape[0], 1))
+X = np.hstack((ones, X))
+
+# Matrix formula
+Xt = X.T
+beta = np.linalg.inv(Xt.dot(X)).dot(Xt).dot(Y)
+
+print("Beta values (Intercept, b1, b2, b3):")
+print(beta)
+
+# Prediction example (2 yrs exp, 9 test, 6 interview)
+new_data = np.array([1, 2, 9, 6])
+prediction = new_data.dot(beta)
+
+print("Predicted salary:", prediction)
+     
+Beta values (Intercept, b1, b2, b3):
+[17737.26346434  2812.95487627  1845.70596798  2205.24017467]
+Predicted salary: 53205.96797671009
+/tmp/ipython-input-454946220.py:8: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  df['experience'] = df['experience'].replace({
+Multiple LR with library ( 1000_company dataset)
+
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Load dataset
+df = pd.read_csv("/content/1000_Companies.csv")
+
+# One Hot Encoding for State
+df = pd.get_dummies(df, columns=['State'], drop_first=True)
+
+# Features and Target
+X = df.drop("Profit", axis=1)
+y = df["Profit"]
+
+# Model
+model = LinearRegression()
+model.fit(X, y)
+
+# Results
+print("Intercept:", model.intercept_)
+print("Coefficients:")
+for feature, coef in zip(X.columns, model.coef_):
+    print(feature, ":", coef)
+
+# Example prediction
+sample = [[160000,130000,300000,1,0]]  # Adjust based on encoded columns
+print("Predicted Profit:", model.predict(sample))
+     
+Intercept: -70051.24950374496
+Coefficients:
+R&D Spend : 0.5531493464618868
+Administration : 1.0262466295667572
+Marketing Spend : 0.08108616100431498
+State_Florida : -446.35353554226776
+State_New York : 97.72760939354787
+Predicted Profit: [175744.20253959]
+/usr/local/lib/python3.12/dist-packages/sklearn/utils/validation.py:2739: UserWarning: X does not have valid feature names, but LinearRegression was fitted with feature names
+  warnings.warn(
+Multiple LR ( without library) ( 1000 companies)
+
+import pandas as pd
+import numpy as np
+
+# Load dataset
+df = pd.read_csv("/content/1000_Companies.csv")
+
+# One Hot Encoding
+df = pd.get_dummies(df, columns=['State'], drop_first=True)
+
+# Separate features and target
+X = df.drop("Profit", axis=1).values
+Y = df["Profit"].values
+
+# Add column of 1s (Intercept)
+ones = np.ones((X.shape[0], 1))
+X = np.hstack((ones, X)).astype(float) # Explicitly cast X to float
+
+# Normal Equation
+Xt = X.T
+beta = np.linalg.inv(Xt.dot(X)).dot(Xt).dot(Y)
+
+print("Beta values (Intercept first):")
+print(beta)
+
+# Example prediction
+sample = np.array([1,160000,130000,300000,1,0])
+prediction = sample.dot(beta)
+
+print("Predicted Profit:", prediction)
+     
+Beta values (Intercept first):
+[-7.00512495e+04  5.53149346e-01  1.02624663e+00  8.10861610e-02
+ -4.46353536e+02  9.77276094e+01]
+Predicted Profit: 175744.20253959118
